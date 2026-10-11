@@ -14,4 +14,7 @@ function copyDir(src, dest) {
 
 copyDir('node_modules/three/build', 'vendor/three');
 copyDir('node_modules/three/examples/jsm', 'vendor/three-examples');
+if (fs.existsSync('vendor/three-examples/Addons.js')) {
+  fs.unlinkSync('vendor/three-examples/Addons.js');
+}
 console.log('[build] Copied Three.js static assets to vendor/');

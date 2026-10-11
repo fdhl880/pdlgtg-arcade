@@ -35,6 +35,12 @@ copyDir(threeExamples, path.join(ROOT_DIR, 'vendor', 'three-examples'));
 copyDir(threeBuild, path.join(PUBLIC_DIR, 'vendor', 'three'));
 copyDir(threeExamples, path.join(PUBLIC_DIR, 'vendor', 'three-examples'));
 
+// Remove unused Addons.js barrel file to avoid any legacy bundler/Babel issues
+const addons1 = path.join(ROOT_DIR, 'vendor', 'three-examples', 'Addons.js');
+if (fs.existsSync(addons1)) fs.unlinkSync(addons1);
+const addons2 = path.join(PUBLIC_DIR, 'vendor', 'three-examples', 'Addons.js');
+if (fs.existsSync(addons2)) fs.unlinkSync(addons2);
+
 // Copy Socket.io client to public/socket.io/
 const socketIoClient = path.join(ROOT_DIR, 'node_modules', 'socket.io', 'client-dist', 'socket.io.js');
 if (fs.existsSync(socketIoClient)) {
