@@ -4,6 +4,12 @@ models/cache/
 mario-kart-*.png
 .DS_Store
 npm-debug.log*
+vendor/
+public/assets/mario-kart/
+public/core/
+public/games/
+public/socket.io/
+public/vendor/
 
 # Local audio overrides.
 audio/

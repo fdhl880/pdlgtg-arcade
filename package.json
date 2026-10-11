@@ -14,7 +14,7 @@
   "scripts": {
     "start": "node server.js",
     "tv": "open -na 'Google Chrome' --args --user-data-dir=$HOME/.pdlgtg-chrome --no-first-run --no-default-browser-check --autoplay-policy=no-user-gesture-required --new-window https://localhost:8443/",
-    "build": "npm run build:menu",
+    "build": "node scripts/prepare-vercel.js && npm run build:menu",
     "build:menu": "esbuild src/menu/index.jsx --bundle --format=esm --outfile=public/menu-react.js --minify",
     "cert": "node scripts/gen-cert.js",
     "test": "node tests/kart-prototype/server.cjs",
@@ -36,7 +36,7 @@
     "three": "^0.185.1"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=20"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

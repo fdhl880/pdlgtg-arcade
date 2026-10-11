@@ -24,8 +24,9 @@ const { Server } = require('socket.io');
 const { ensureCert, localAddresses } = require('./scripts/gen-cert');
 
 const PORT = Number(process.env.PORT) || 8443;
+const IS_VERCEL = Boolean(process.env.VERCEL);
 const IS_RENDER = Boolean(process.env.RENDER || process.env.RENDER_SERVICE_ID);
-const FORCE_HTTP = process.env.HTTP === '1' || IS_RENDER;
+const FORCE_HTTP = process.env.HTTP === '1' || IS_RENDER || IS_VERCEL;
 const GAMES_DIR = path.join(__dirname, 'games');
 
 const app = express();
@@ -56,6 +57,18 @@ app.use('/audio', express.static(path.join(__dirname, 'audio'), { fallthrough: t
  * unordered games follow alphabetically.
  */
 function listGames() {
+  const manifestPath = path.join(__dirname, 'games', 'games-manifest.json');
+  if (fs.existsSync(manifestPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    } catch {}
+  }
+  const publicManifestPath = path.join(__dirname, 'public', 'games-manifest.json');
+  if (fs.existsSync(publicManifestPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(publicManifestPath, 'utf8'));
+    } catch {}
+  }
   let entries;
   try {
     entries = fs.readdirSync(GAMES_DIR, { withFileTypes: true });
@@ -76,7 +89,7 @@ function listGames() {
     .sort((a, b) => (a.order ?? 99) - (b.order ?? 99) || a.title.localeCompare(b.title));
 }
 
-app.get('/api/games', (_req, res) => res.json(listGames()));
+app.get(['/api/games', '/games'], (_req, res) => res.json(listGames()));
 
 /**
  * A fresh id per server run. Clients tie their saved calibration to it, so
@@ -84,7 +97,7 @@ app.get('/api/games', (_req, res) => res.json(listGames()));
  * page for the life of that run — restart the server and you calibrate again.
  */
 const BOOT_ID = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-app.get('/api/session', (_req, res) => res.json({ bootId: BOOT_ID }));
+app.get(['/api/session', '/session'], (_req, res) => res.json({ bootId: BOOT_ID }));
 
 function generateSmartReply(query) {
   const q = (query || '').toLowerCase();
@@ -150,7 +163,7 @@ async function getLocalModel() {
   }
 }
 
-app.post('/api/chat', async (req, res) => {
+app.post(['/api/chat', '/chat'], async (req, res) => {
   const { message, messages } = req.body || {};
   let userText = message;
   if (!userText && Array.isArray(messages)) {
@@ -218,7 +231,7 @@ const lanIp = localAddresses()[0] || 'localhost';
 const controllerUrl = `${scheme}://${lanIp}:${PORT}/controller`;
 
 // The PC client fetches this to render a scannable join code.
-app.get('/api/pairing', async (req, res) => {
+app.get(['/api/pairing', '/pairing'], async (req, res) => {
   try {
     const forwardedHost = req.headers['x-forwarded-host'] || req.headers.host;
     const forwardedProto = req.headers['x-forwarded-proto'] || (tls ? 'https' : 'http');
@@ -371,34 +384,38 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  const line = '─'.repeat(52);
-  console.log(`\n${line}`);
-  console.log('  🕹  pdlgtg — Arcade Gaming Hub');
-  console.log(line);
-  console.log(`  Launcher      ${scheme}://localhost:${PORT}/`);
-  console.log(`  Phone remote  ${controllerUrl}`);
-  const games = listGames();
-  console.log(`\n  ${games.length} game${games.length === 1 ? '' : 's'}:`);
-  for (const g of games) console.log(`    ${g.emoji}  ${g.title}  →  ${g.url}`);
-  if (!tls) {
-    console.log('\n  ⚠  Running plain HTTP. Phone sensors will NOT work off');
-    console.log('     localhost — browsers gate the IMU behind a secure context.');
-  } else {
-    console.log('\n  ⚠  Self-signed cert: the phone will show a warning once.');
-    console.log('     Tap Advanced → Proceed. Sensors need HTTPS to unlock.');
-  }
+if (!IS_VERCEL && require.main === module) {
+  server.listen(PORT, '0.0.0.0', () => {
+    const line = '─'.repeat(52);
+    console.log(`\n${line}`);
+    console.log('  🕹  pdlgtg — Arcade Gaming Hub');
+    console.log(line);
+    console.log(`  Launcher      ${scheme}://localhost:${PORT}/`);
+    console.log(`  Phone remote  ${controllerUrl}`);
+    const games = listGames();
+    console.log(`\n  ${games.length} game${games.length === 1 ? '' : 's'}:`);
+    for (const g of games) console.log(`    ${g.emoji}  ${g.title}  →  ${g.url}`);
+    if (!tls) {
+      console.log('\n  ⚠  Running plain HTTP. Phone sensors will NOT work off');
+      console.log('     localhost — browsers gate the IMU behind a secure context.');
+    } else {
+      console.log('\n  ⚠  Self-signed cert: the phone will show a warning once.');
+      console.log('     Tap Advanced → Proceed. Sensors need HTTPS to unlock.');
+    }
 
-  // One command, whole console: npm start also opens the TV browser — its
-  // own Chrome profile so the autoplay flag genuinely applies (handing the
-  // URL to an already-running Chrome silently drops process flags).
-  // HTTP dev mode and NO_OPEN=1 skip this.
-  if (tls && process.platform === 'darwin' && !process.env.NO_OPEN) {
-    exec('open -na "Google Chrome" --args'
-      + ' --user-data-dir="$HOME/.pdlgtg-chrome" --no-first-run --no-default-browser-check'
-      + ` --autoplay-policy=no-user-gesture-required --new-window https://localhost:${PORT}/`);
-    console.log('\n  📺 Opening the console in Chrome (autoplay enabled)…');
-    console.log('     Skip with NO_OPEN=1 npm start.');
-  }
-  console.log(`${line}\n`);
-});
+    // One command, whole console: npm start also opens the TV browser — its
+    // own Chrome profile so the autoplay flag genuinely applies (handing the
+    // URL to an already-running Chrome silently drops process flags).
+    // HTTP dev mode and NO_OPEN=1 skip this.
+    if (tls && process.platform === 'darwin' && !process.env.NO_OPEN) {
+      exec('open -na "Google Chrome" --args'
+        + ' --user-data-dir="$HOME/.pdlgtg-chrome" --no-first-run --no-default-browser-check'
+        + ` --autoplay-policy=no-user-gesture-required --new-window https://localhost:${PORT}/`);
+      console.log('\n  📺 Opening the console in Chrome (autoplay enabled)…');
+      console.log('     Skip with NO_OPEN=1 npm start.');
+    }
+    console.log(`${line}\n`);
+  });
+}
+
+module.exports = app;
