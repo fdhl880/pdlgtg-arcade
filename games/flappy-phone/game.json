@@ -1,0 +1,10 @@
+{
+  "title": "Flappy Phone",
+  "tagline": "Flick phone up to flap wings! Dodge the green pipes.",
+  "emoji": "🐦",
+  "category": "Casual",
+  "players": 1,
+  "order": 10,
+  "mobileReady": true,
+  "themeColor": "#f59e0b"
+}

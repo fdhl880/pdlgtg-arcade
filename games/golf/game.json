@@ -1,0 +1,10 @@
+{
+  "title": "Golf",
+  "tagline": "One scenic par-4. Swing phone like a real golf club!",
+  "emoji": "⛳",
+  "category": "Sports",
+  "players": 1,
+  "order": 8,
+  "mobileReady": true,
+  "themeColor": "#84cc16"
+}

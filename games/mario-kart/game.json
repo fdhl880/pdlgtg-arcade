@@ -1,0 +1,10 @@
+{
+  "title": "Mario Kart",
+  "tagline": "3D Stadium Race. Drift, boost & throw items!",
+  "emoji": "🏎️",
+  "category": "Racing",
+  "players": 1,
+  "order": 1,
+  "mobileReady": true,
+  "themeColor": "#00d2ff"
+}

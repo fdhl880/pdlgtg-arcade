@@ -1,0 +1,10 @@
+{
+  "title": "Shooting Range",
+  "tagline": "Targets pop, point your remote, aim & score!",
+  "emoji": "🎯",
+  "category": "Action",
+  "players": 1,
+  "order": 6,
+  "mobileReady": true,
+  "themeColor": "#a855f7"
+}

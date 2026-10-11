@@ -1,0 +1,10 @@
+{
+  "title": "Kart Time Trial",
+  "tagline": "Precision Time Trial. Tilt to steer & race your ghost.",
+  "emoji": "🏁",
+  "category": "Racing",
+  "players": 1,
+  "order": 2,
+  "mobileReady": true,
+  "themeColor": "#ff5858"
+}

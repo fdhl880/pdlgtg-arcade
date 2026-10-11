@@ -1,0 +1,10 @@
+{
+  "title": "Sketch 3D",
+  "tagline": "Point, press A & paint laser ribbons in 3D space.",
+  "emoji": "🎨",
+  "category": "Creative",
+  "players": 1,
+  "order": 11,
+  "mobileReady": true,
+  "themeColor": "#ec4899"
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>pdlgtg Arcade — Next-Gen Motion & Mobile Gaming Hub</title>
+  <meta name="description" content="pdlgtg — Koleksi 12 game arcade 3D seru dengan kontrol motion remote HP, layar sentuh mobile, dan keyboard PC. 100% offline!" />
+  <meta name="theme-color" content="#6c5ce7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/assets/icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
+  <link rel="stylesheet" href="/menu-react.css" />
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Socket.IO for wireless controller events -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- React 19 + JS Application Bundle -->
+  <script type="module" src="/menu-react.js"></script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
+

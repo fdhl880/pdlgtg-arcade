@@ -1,0 +1,10 @@
+{
+  "title": "Swordplay",
+  "tagline": "Duel a rival on the water. Deflect, strike & parry.",
+  "emoji": "⚔️",
+  "category": "Action",
+  "players": 1,
+  "order": 5,
+  "mobileReady": true,
+  "themeColor": "#38bdf8"
+}

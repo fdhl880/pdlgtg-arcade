@@ -1,0 +1,10 @@
+{
+  "title": "Alien Attack",
+  "tagline": "Roll to steer patrol. Fire lasers & defeat invaders.",
+  "emoji": "👾",
+  "category": "Action",
+  "players": 1,
+  "order": 4,
+  "mobileReady": true,
+  "themeColor": "#22c55e"
+}

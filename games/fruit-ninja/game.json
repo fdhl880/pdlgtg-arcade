@@ -1,0 +1,10 @@
+{
+  "title": "Fruit Ninja",
+  "tagline": "Swing phone like a sword. Up to 4 blades, slice combos!",
+  "emoji": "🍉",
+  "category": "Action",
+  "players": 4,
+  "order": 3,
+  "mobileReady": true,
+  "themeColor": "#ff6b4a"
+}

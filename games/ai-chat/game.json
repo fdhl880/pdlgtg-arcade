@@ -1,0 +1,10 @@
+{
+  "title": "AI Companion",
+  "tagline": "Offline AI Chat & Interactive Storyteller buddy!",
+  "emoji": "🤖",
+  "category": "AI",
+  "players": 1,
+  "order": 12,
+  "mobileReady": true,
+  "themeColor": "#8b5cf6"
+}
