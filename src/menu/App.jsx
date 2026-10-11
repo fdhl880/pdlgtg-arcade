@@ -28,17 +28,36 @@ export function App() {
   const [launchingGame, setLaunchingGame] = useState(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
-  // Fetch games & pairing data
+  // Fetch games & pairing data (with CDN manifest fallback)
   useEffect(() => {
     fetch('/api/games')
-      .then((r) => r.json())
-      .then((data) => setGames(data))
-      .catch((err) => console.error('Error fetching games:', err));
+      .then((r) => {
+        if (!r.ok) throw new Error('API failed');
+        return r.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setGames(data);
+        else throw new Error('Empty data');
+      })
+      .catch(() => {
+        fetch('/games-manifest.json')
+          .then((r) => r.json())
+          .then((data) => {
+            if (Array.isArray(data)) setGames(data);
+          })
+          .catch((err) => console.error('Error fetching games manifest:', err));
+      });
 
     fetch('/api/pairing')
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('Pairing API failed');
+        return r.json();
+      })
       .then((data) => setPairingData(data))
-      .catch((err) => console.error('Error fetching pairing:', err));
+      .catch(() => {
+        const hostUrl = window.location.origin + '/controller';
+        setPairingData({ url: hostUrl, httpUrl: hostUrl });
+      });
   }, []);
 
   // Connect to Socket.IO for remote presence detection

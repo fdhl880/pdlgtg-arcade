@@ -5,9 +5,7 @@
   "buildCommand": "npm run build",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/controller", "destination": "/controller.html" },
-    { "source": "/(.*)", "destination": "/$1" }
+    { "source": "/controller", "destination": "/controller.html" }
   ],
   "headers": [
     {
