@@ -1,0 +1,1 @@
+'use strict';\nmodule.exports = require('./server.js');\n

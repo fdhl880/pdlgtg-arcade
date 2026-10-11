@@ -384,8 +384,7 @@ io.on('connection', (socket) => {
   });
 });
 
-if (!IS_VERCEL && require.main === module) {
-  server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', () => {
     const line = '─'.repeat(52);
     console.log(`\n${line}`);
     console.log('  🕹  pdlgtg — Arcade Gaming Hub');
@@ -416,6 +415,5 @@ if (!IS_VERCEL && require.main === module) {
     }
     console.log(`${line}\n`);
   });
-}
 
 module.exports = app;

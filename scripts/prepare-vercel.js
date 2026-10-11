@@ -79,4 +79,12 @@ if (gamesList.length > 0) {
   console.log(`[vercel-build] Successfully indexed ${gamesList.length} games into games-manifest.json`);
 }
 
+// Ensure entrypoint shims exist in public/ and root
+const shimContent = "'use strict';\\nmodule.exports = require('../server.js');\\n".replace(/\\\\n/g, '\n');
+fs.writeFileSync(path.join(PUBLIC_DIR, 'server.js'), shimContent, 'utf8');
+fs.writeFileSync(path.join(PUBLIC_DIR, 'index.js'), shimContent, 'utf8');
+const rootShim = "'use strict';\\nmodule.exports = require('./server.js');\\n".replace(/\\\\n/g, '\n');
+fs.writeFileSync(path.join(ROOT_DIR, 'index.js'), rootShim, 'utf8');
+console.log('[vercel-build] Ensured server.js and index.js entrypoints exist in both root and public/');
+
 console.log('[vercel-build] Done! All public static assets are ready for Vercel Edge CDN deployment.');
